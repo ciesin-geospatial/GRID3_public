@@ -1,0 +1,7 @@
+set COUNTRY_CODE=COD
+set RASTER_GRID_PATH=D:\GRID\ReferenceRasters\cod_px_area_100m.tif
+set BUILDING_FOOTPRINT_SHAPEFILE_PATHS=D:\GRID\COD\ECOPIA\chunk_0.shp;D:\GRID\COD\ECOPIA\chunk_1.shp;D:\GRID\COD\ECOPIA\chunk_10.shp;D:\GRID\COD\ECOPIA\chunk_11.shp;D:\GRID\COD\ECOPIA\chunk_12.shp;D:\GRID\COD\ECOPIA\chunk_13.shp;D:\GRID\COD\ECOPIA\chunk_14.shp;D:\GRID\COD\ECOPIA\chunk_15.shp;D:\GRID\COD\ECOPIA\chunk_16.shp;D:\GRID\COD\ECOPIA\chunk_17.shp;D:\GRID\COD\ECOPIA\chunk_18.shp;D:\GRID\COD\ECOPIA\chunk_19.shp;D:\GRID\COD\ECOPIA\chunk_2.shp;D:\GRID\COD\ECOPIA\chunk_20.shp;D:\GRID\COD\ECOPIA\chunk_21.shp;D:\GRID\COD\ECOPIA\chunk_22.shp;D:\GRID\COD\ECOPIA\chunk_23.shp;D:\GRID\COD\ECOPIA\chunk_24.shp;D:\GRID\COD\ECOPIA\chunk_25.shp;D:\GRID\COD\ECOPIA\chunk_26.shp;D:\GRID\COD\ECOPIA\chunk_27.shp;D:\GRID\COD\ECOPIA\chunk_28.shp;D:\GRID\COD\ECOPIA\chunk_29.shp;D:\GRID\COD\ECOPIA\chunk_3.shp;D:\GRID\COD\ECOPIA\chunk_30.shp;D:\GRID\COD\ECOPIA\chunk_31.shp;D:\GRID\COD\ECOPIA\chunk_32.shp;D:\GRID\COD\ECOPIA\chunk_33.shp;D:\GRID\COD\ECOPIA\chunk_34.shp;D:\GRID\COD\ECOPIA\chunk_35.shp;D:\GRID\COD\ECOPIA\chunk_36.shp;D:\GRID\COD\ECOPIA\chunk_37.shp;D:\GRID\COD\ECOPIA\chunk_38.shp;D:\GRID\COD\ECOPIA\chunk_39.shp;D:\GRID\COD\ECOPIA\chunk_4.shp;D:\GRID\COD\ECOPIA\chunk_5.shp;D:\GRID\COD\ECOPIA\chunk_6.shp;D:\GRID\COD\ECOPIA\chunk_7.shp;D:\GRID\COD\ECOPIA\chunk_8.shp;D:\GRID\COD\ECOPIA\chunk_9.shp
+set RELEASE_DATE=20200323
+set CODE_VERSION=V02_b
+set METADATA_DIR=D:\GRID\metadata
+
