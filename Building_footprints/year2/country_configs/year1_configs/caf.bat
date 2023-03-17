@@ -1,5 +1,0 @@
-set COUNTRY_CODE=CAF
-set CODE_VERSION=V02
-set RELEASE_DATE=20200114
-set RASTER_GRID_PATH=D:\GRID\ReferenceRasters\caf_px_area_100m.tif
-set BUILDING_FOOTPRINT_SHAPEFILE_PATHS=D:\GRID\BuildingFootprints\CAF_CentralAfricanRepublic\Building footprings\UTM33N\Central_African_Republic_UTM33N.shp;D:\GRID\BuildingFootprints\CAF_CentralAfricanRepublic\Building footprings\UTM34N\Central_African_Republic_UMT34N.shp;D:\GRID\BuildingFootprints\CAF_CentralAfricanRepublic\Building footprings\UTM35N\Central_African_Republic_UMT35N.shp
