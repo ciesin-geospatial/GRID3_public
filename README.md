@@ -1,8 +1,9 @@
 # GRID3_public
 Opensource repository for grid3 projects
 
-- **POI_processing Main set of pure python code for cleaning and exploring points of interest.
+
 - **Dictionaries** Files to support the cleaning and standardization of data
+- **POI_processing Main set of pure python code for cleaning and exploring points of interest.
 - **Utilities** Main shared code base for functions used in various pipelines
 
 ## Python Setup
