@@ -1,0 +1,91 @@
+[about_POI_table]
+# Source/owner of the data file this is used to populate the source field
+data_source=WHO_ISS
+
+## directory that all word frequency table, spelling and type dictionary
+## leave blank for default dictionaries
+dictionaries_dir =
+
+## where to read raw data from. If the file is a feature class include the gdb extention D:\mydata.gdb
+poi_input_dir =  D:\data\input
+
+## name of input table with file extention. Supported files include .csv, .xlxs, .gpkg, .shp, featureclass(do not have extention)
+poi_input_filename = moz_health_facilities.xlsx
+
+## where to write the output file to
+poi_output_dir = D:\data\output
+
+## name of area of interest: The three letter ISO code for the country
+country_ISO=moz
+
+## field name that holds poi names
+poi_name_field=facility_name
+
+## field name that holds poi type, if none leave blank
+poi_type_field=facility_type
+
+## data type for finding the proper dictionary - options are settlement, health_facility, school, religious_cntr
+poi_data_type=health_facility
+
+## fields from poi input table that holds the boundary information
+## if the admin level is not in the data you are cleaning then leave it blank
+## see the country_dictionary for mapping
+
+boundary1=province
+boundary2=district
+boundary3=posto
+boundary4=
+
+## Language:French, English, or Portuguese
+language=Portuguese
+
+## latitude field name poi input table if exist, if not leave blank
+poi_lat_field=lat
+
+## longitude field name poi input table  if exist
+poi_long_field=long
+
+
+[word-frequency]
+## Words with less than this number will be ignored
+frequency_threshold=10
+
+
+[create_type_dictionary]
+old_type_dict_path=None
+
+
+[create_spelling_dictionary]
+old_spelling_dict_path=None
+
+
+[preprocessing1]
+## output file type, specified by extension (.xlsx, .cvs, .gpkg)
+poi_output_extension_type = .xlsx
+
+
+[preprocessing2]
+## output field from prepro1, these fields are created by preprocessing1
+poi_field=g3_hltfac
+
+## admin levels from prepro1, these fields are created by preprocessing1
+poi_admin1=moz_dist
+poi_admin2=moz_posto
+
+## output file type, specified by extension (.xlsx, .cvs, or .gpkg)
+poi_output_extension_type = .xlsx
+
+## admin1 boundary layer, this should be the same administrative level defined by poi_admin1 above
+admin1_bry=D:\data\boundaries\moz_boundaries.gdb\moz_district_boundaries
+
+## admin1 field name from admin1 boundary
+admin1_bry_var=district
+
+## admin2 boundary layer, this should be the same administrative level defined by poi_admin2 above
+admin2_bry=D:\data\boundaries\moz_boundaries.gdb\moz_posto_boundaries
+
+## admin2 field name from admin2 boundary
+admin2_bry_var=posto
+
+## settlement extent layer
+path_sett_extent=D:\GRID\DRC\GRID3_moz_settlement_extents_20200403_V02.gdb\merged_extents

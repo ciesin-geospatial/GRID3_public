@@ -31,15 +31,15 @@ poi_data_type = {'health_facility': 'g3_hltfac', 'school': 'g3_school', 'settlem
 
 country_boundaries = {
     # COD
-    "cod": {'boundary0': 'g3_cntry', 'boundary1': 'g3_prov', 'boundary2': 'g3_ant', 'boundary3': 'g3_zs','boundary4': 'g3_as'},
+    "cod": {'boundary0': 'cod_cntry', 'boundary1': 'cod_prov', 'boundary2': 'cod_ant', 'boundary3': 'cod_zs','boundary4': 'cod_as'},
     # SLE
-    "sle": {'boundary0': 'g3_cntry', 'boundary1': 'g3_prov', 'boundary2': 'g3_dist', 'boundary3': 'g3_chief', 'boundary4': 'g3_sec'},
+    "sle": {'boundary0': 'sle_cntry', 'boundary1': 'sle_prov', 'boundary2': 'sle_dist', 'boundary3': 'sle_chief', 'boundary4': 'sle_sec'},
     # NGA
-    "nga": {'boundary0': 'g3_cntry', 'boundary1': 'g3_state', 'boundary2': 'g3_lga', 'boundary3': 'g3_ward', 'boundary4': 'NA'},
+    "nga": {'boundary0': 'nga_cntry', 'boundary1': 'nga_state', 'boundary2': 'nga_lga', 'boundary3': 'nga_ward', 'boundary4': 'NA'},
     # MOZ
-    "moz": {'boundary0': 'g3_cntry', 'boundary1': 'g3_prov', 'boundary2': 'g3_dist', 'boundary3': 'g3_posto', 'boundary4': 'NA'},
+    "moz": {'boundary0': 'moz_cntry', 'boundary1': 'moz_prov', 'boundary2': 'moz_dist', 'boundary3': 'moz_posto', 'boundary4': 'NA'},
     # ZMB
-    "zmb": {'boundary0': 'g3_cntry', 'boundary1': 'g3_prov', 'boundary2': 'g3_dist', 'boundary3': 'g3_ward', 'boundary4': 'NA'},
+    "zmb": {'boundary0': 'zmb_cntry', 'boundary1': 'zmb_prov', 'boundary2': 'zmb_dist', 'boundary3': 'zmb_ward', 'boundary4': 'NA'},
     # BFA
-    "bfa": {'boundary0': 'g3_cntry', 'boundary1': 'g3_regn', 'boundary2': 'g3_distsan', 'boundary3': 'g3_comm', 'boundary4': 'NA'}
+    "bfa": {'boundary0': 'bfa_cntry', 'boundary1': 'bfa_regn', 'boundary2': 'bfa_distsan', 'boundary3': 'bfa_comm', 'boundary4': 'NA'}
 }
