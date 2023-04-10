@@ -39,7 +39,7 @@ Run the following commands, one at a time, to create a new Conda environment cal
     conda install unidecode pointpats fuzzywuzzy configparser openpyxl rapidfuzz
     pip install ordered_set jellyfish
     
-If you have an ssl issue see this
+### If you have an ssl issue see this
 
 https://github.com/conda/conda/issues/11982
 
