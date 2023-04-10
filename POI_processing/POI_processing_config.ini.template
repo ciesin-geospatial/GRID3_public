@@ -9,7 +9,7 @@ dictionaries_dir =
 ## where to read raw data from. If the file is a feature class include the gdb extention D:\mydata.gdb
 poi_input_dir =  D:\data\input
 
-## name of input table with file extention. Supported files include .csv, .xlsx, .gpkg, .shp, featureclass(do not have extenstion)
+## name of input table with file extension. Supported files include .csv, .xlsx, .gpkg, .shp, featureclass(do not have extenstion)
 poi_input_filename = moz_health_facilities.xlsx
 
 ## where to write the output file to
