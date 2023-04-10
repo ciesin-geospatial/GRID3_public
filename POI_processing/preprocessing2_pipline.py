@@ -1,8 +1,8 @@
 """
 this script does exploratory data analyses on a PoI table
 these columns will be added output table
->> poi_uuid:unique id for each entity based on poi_name_var and admin names
->> poi_uuid_isUnique:indicates if a entity duplicated: 1=duplicate, 0=unique
+>> poi_code:unique id for each entity based on poi_name_var and admin names
+>> poi_code_isUnique:indicates if a entity duplicated: 1=duplicate, 0=unique
 >> settlement_type:settlement extent type that points are located.
     categories: bua, ssa, hamlets and out of a settlement (more than 250m to a settlement extent)
 >> dist_to_settlement_type:Distance between point and a settlement extent
@@ -142,12 +142,12 @@ def main(config_file=None, config=None):
     if poi_admin1 is not None and poi_admin2 is not None:
         uuid_var_list.append(poi_admin1)
         uuid_var_list.append(poi_admin2)
-    create_uuid_code(point_gdf, uuid_var_list, "poi_uuid")
+    create_uuid_code(point_gdf, uuid_var_list, "poi_code")
     # endregion
 
     # flag if any facility is duplicated based on mfl_uuid
     print("Flagging duplicate entities...")
-    flag_duplicate_items_in_field(point_gdf, "poi_uuid")
+    flag_duplicate_items_in_field(point_gdf, "poi_code")
 
     # reformat facility types
     print("Reformatting types based on language...")
@@ -161,7 +161,7 @@ def main(config_file=None, config=None):
 
     # flag overlapped points
     print("Check records identical lat/long...")
-    check_overlaps(point_gdf, poi_output_type_field, 10, poi_long_var, poi_lat_var)
+    check_overlaps(point_gdf, poi_output_type_field, 1, poi_long_var, poi_lat_var)
 
     # Check if points fall into right admin1 boundary
     print("Check if points fall in to right admin units...")

@@ -1,0 +1,104 @@
+##===============Configuration File Matching Pipeline=========##
+#we look for all our inputs in this group, required to be here
+[inputs]
+
+##=================== About input table ======================##
+#file we are looking to augment with our matches
+#it := input table
+
+#it_input_dir = Path to directory containing the input table
+#           if we want a feature file must point to a gdb
+it_input_dir = C:\Users\hengin\Desktop\abw
+
+#it_input_filename  = name of the input table with file extension such as csv, xlsx, shp
+it_input_filename = abw_pop_table.csv
+
+#it_output_dir = path to a directory to save our updated file
+#           if we want a feature file must point to a gdb
+it_output_dir = C:\Users\hengin\Desktop\abw
+
+#it_output_filename = filename for our modified input table after match with file extension such as csv, xlsx, shp
+it_output_filename = abw_pop_table_matched.xlsx
+
+#it_poi_name = a field name that is going to be matched
+it_poi_name = NAME2
+
+#it_poi_type = a field name that holds it_poi_name type such as health facility type,
+#                give "None" if the type field does not exist.
+it_poi_type = None
+
+#it_admin1 = admin 1 field name such as region or health zone,
+#            give "None" if the admin 1 field does not exist.
+it_admin1 = None
+
+# it_admin2 =admin 2 field name such as district, chiefdom , ward
+#              give "None" if the admin 2 field does not exist.
+it_admin2 =NAME1
+
+# it_id = a field name that holds unique identifier for each row in the input table
+#        give "None" the unique identifier field does not exist.
+it_id = UCADMIN2
+
+# it_lat = name of latitude column, leave empty if latitude field does not exist
+it_lat =
+
+# it_long = name of longitude column, leave empty if Longitude field does not exist
+it_long =
+
+
+##=================== About match table ======================##
+#file where we will match against and get the data from
+#mt := match table
+
+#mt_input_dir = Path to directory containing the match table
+#           if we want a feature file must point to a gdb
+mt_input_dir = C:\Users\hengin\Desktop\abw\abw.gdb
+
+#mt_input_filename  = name of the match table with file extension such as csv, xlsx, shp
+mt_input_filename = abw_admin2_boundaries
+
+#mt_output_dir = path to a directory to save our updated file
+#           if we want a feature file must point to a gdb
+mt_output_dir = C:\Users\hengin\Desktop\abw
+
+#mt_output_filename = filename for our modified match table after match with file extension such as csv, xlsx, shp
+mt_output_filename = abw_admin2_boundaries_matched.xlsx
+
+#mt_poi_name = a field name that is going to be matched
+mt_poi_name = NAME2
+
+#mt_poi_type = a field name that holds mt_poi_name type such as health facility type,
+#                give "None" if the type field does not exist.
+mt_poi_type = None
+
+#mt_admin1 = admin 1 field name such as region or health zone,
+#            give "None" if the admin 1 field does not exist.
+mt_admin1 = None
+
+# mt_admin2 =admin 2 field name such as district, chiefdom , ward
+#              give "None" if the admin 2 field does not exist.
+mt_admin2 =NAME1
+
+# mt_id = a field name that holds unique identifier for each row in the input table
+#        give "None" the unique identifier field does not exist.
+mt_id = UCADMIN2
+
+# mt_lat = name of latitude column, leave empty if latitude field does not exist
+mt_lat =
+
+# mt_long = name of longitude column, leave empty if Longitude field does not exist
+mt_long =
+
+
+##================ Matching parameters =======================##
+# match_by_distance = Specify -True- if both input and match tables have latitude and longitude fields,
+#                    Otherwise -False-
+match_by_distance = False
+
+# match_distance_m = Distance in meters to pair names for matching
+match_distance_m = 500
+
+
+
+
+
