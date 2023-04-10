@@ -9,7 +9,7 @@ dictionaries_dir =
 ## where to read raw data from. If the file is a feature class include the gdb extention D:\mydata.gdb
 poi_input_dir =  D:\data\input
 
-## name of input table with file extention. Supported files include .csv, .xlxs, .gpkg, .shp, featureclass(do not have extention)
+## name of input table with file extention. Supported files include .csv, .xlsx, .gpkg, .shp, featureclass(do not have extenstion)
 poi_input_filename = moz_health_facilities.xlsx
 
 ## where to write the output file to
@@ -31,9 +31,16 @@ poi_data_type=health_facility
 ## if the admin level is not in the data you are cleaning then leave it blank
 ## see the country_dictionary for mapping
 
+# add the name of the field that hold the province name
 boundary1=province
+
+# add the name of the field that holds the district name
 boundary2=district
+
+# add the name of the field that holds the posto name
 boundary3=posto
+
+# currently blank for Mozambique
 boundary4=
 
 ## Language:French, English, or Portuguese
