@@ -121,7 +121,7 @@ def main(config_file=None, config=None):
 
     admin2_columns = None
     if poi_admin2 is not None:
-        preclean(admin2_bdry_gdf, admin1_bry_var, "admin1_bry", remove_accent=True)
+        preclean(admin1_bdry_gdf, admin1_bry_var, "admin1_bry", remove_accent=True)
         preclean(admin2_bdry_gdf, admin2_bry_var, "admin2_bry", remove_accent=True)
         admin2_columns = list(admin2_bdry_gdf.columns)
     # endregion
