@@ -21,7 +21,6 @@ these columns will be added output table
 from matching.matching_utilities import fuzzy_match
 import configparser
 from dictionaries.dictionary_utilities import *
-import fiona
 
 
 def main(config_file=None, config=None):
@@ -35,7 +34,6 @@ def main(config_file=None, config=None):
         config.read(config_file)
     else:
         config_file = "config_obj"
-
 
     try:
         config_general = config['about_POI_table']
@@ -58,14 +56,16 @@ def main(config_file=None, config=None):
         poi_admin1 = preprocessing2_config['poi_admin1']
         poi_admin2 = preprocessing2_config['poi_admin2']
 
-        admin1_bry = preprocessing2_config["admin1_bry"]
-        admin1_bry_var = preprocessing2_config["admin1_bry_var"]
-        admin2_bry = preprocessing2_config["admin2_bry"]
-        admin2_bry_var = preprocessing2_config["admin2_bry_var"]
+        admin_bdry_file = preprocessing2_config["admin_bdry_file"]
+        admin1_bdry_var = preprocessing2_config["admin1_bdry_var"]
+        admin2_bdry_var = preprocessing2_config["admin2_bdry_var"]
         path_sett_extent = preprocessing2_config["path_sett_extent"]
     except KeyError as ke:
         print("Can't find section or key '" + ke.args[0] + "' in config file '" + config_file + "'")
         return()
+
+    if poi_admin1 == "" and poi_admin2 == "":
+        abort("either poi_admin1 and/or poi_admin2 required to be specified")
 
     # poi_type_var = "sub_type"
     pot_output_name_field, poi_output_type_field = get_poi_labels(poi_data_type)
@@ -80,51 +80,37 @@ def main(config_file=None, config=None):
     # make sure everything exists
     if not os.path.exists(poi_output_dir):
         abort("can't save output - output directory doesn't exists: " + str(poi_output_dir))
-
-    if get_file_type(poi_input_full_filename) == "feature":
-        all_layers = fiona.listlayers(poi_input_dir)
-        if poi_input_filename not in all_layers:
-            abort("can't load input, file doesn't exists: " + str(poi_input_full_filename))
-    else:
-        if not os.path.isfile(poi_input_full_filename):
-            abort("can't load input, file doesn't exists: " + str(poi_input_full_filename))
+    sanity_check_file(poi_input_full_filename)
+    sanity_check_file(admin_bdry_file)
+    sanity_check_file(path_sett_extent)
 
     # read poi_input_filename
     print("Loading poi file " + poi_input_full_filename + " ...")
     point_gdf = read_data(poi_input_full_filename, poi_lat_var, poi_long_var)
-    admin1_bdry_gdf = read_data(admin1_bry)
-    admin2_bdry_gdf = read_data(admin2_bry)
-
     sanity_check_df(point_gdf, poi_input_filename, [poi_name_var, poi_lat_var, poi_long_var, poi_admin1, poi_admin2])
-    sanity_check_df(admin1_bdry_gdf, admin1_bry, [admin1_bry_var])
-    sanity_check_df(admin2_bdry_gdf, admin2_bry, [admin2_bry_var])
+
+    # read boundary file
+    print("Loading boundary file " + admin_bdry_file)
+    admin_bdry_gdf = read_data(admin_bdry_file)
+    check_fields = [admin1_bdry_var]
+    if admin2_bdry_var != "":
+        check_fields.append(admin2_bdry_var)
+    sanity_check_df(admin_bdry_gdf, admin_bdry_file, check_fields)
 
     # read settlement extent
     print("Loading settlement file " + path_sett_extent + " ...")
-    sett_extent = None
-    if "gdb" in path_sett_extent:
-        gdb_name = os.path.dirname(path_sett_extent)
-        layer_name = os.path.basename(path_sett_extent)
-        sett_extent = geopandas.read_file(gdb_name, driver='FileGDB', layer=layer_name)
-    if path_sett_extent.endswith(".shp"):
-        sett_extent = read_data(path_sett_extent)
+    sett_extent = read_data(path_sett_extent)
 
     # Clean facility name, admin1 and admin2
-    # region
     print("Cleaning input variables...")
     point_gdf[poi_lat_var].fillna(0, inplace=True)
     point_gdf[poi_long_var].fillna(0, inplace=True)
-    admin1_columns = None
-    if poi_admin1 is not None:
-        preclean(admin1_bdry_gdf, admin1_bry_var, "admin1_bry", remove_accent=True)
-        admin1_columns = list(admin1_bdry_gdf.columns)
 
-    admin2_columns = None
-    if poi_admin2 is not None:
-        preclean(admin1_bdry_gdf, admin1_bry_var, "admin1_bry", remove_accent=True)
-        preclean(admin2_bdry_gdf, admin2_bry_var, "admin2_bry", remove_accent=True)
-        admin2_columns = list(admin2_bdry_gdf.columns)
-    # endregion
+    if poi_admin1 != "":
+        preclean(admin_bdry_gdf, admin1_bdry_var, "admin1_bry", remove_accent=True)
+
+    if poi_admin2 != "":
+        preclean(admin_bdry_gdf, admin2_bdry_var, "admin2_bry", remove_accent=True)
 
     # fill type by  with generic type of type is missing
     print("Filling missing types...")
@@ -136,14 +122,13 @@ def main(config_file=None, config=None):
     point_gdf[poi_name_var].fillna(point_gdf[poi_output_type_field], inplace=True)
 
     # create facility unique id with combination of poi_admin1, poi_admin2,and poi_name_var
-    # region
     print("Creating uuid...")
     uuid_var_list = [poi_name_var]
-    if poi_admin1 is not None and poi_admin2 is not None:
+    if poi_admin1 != "":
         uuid_var_list.append(poi_admin1)
+    if poi_admin2 != "":
         uuid_var_list.append(poi_admin2)
     create_uuid_code(point_gdf, uuid_var_list, "poi_code")
-    # endregion
 
     # flag if any facility is duplicated based on mfl_uuid
     print("Flagging duplicate entities...")
@@ -165,49 +150,49 @@ def main(config_file=None, config=None):
 
     # Check if points fall into right admin1 boundary
     print("Check if points fall in to right admin units...")
-    if poi_admin1 is not None:
+    if poi_admin1 != "":
         # Check if points fall into right admin1 boundary
-        point_gdf = check_by_admin(point_gdf, poi_admin1, admin1_bdry_gdf, "admin1_bry")
+        point_gdf = check_by_admin(point_gdf, poi_admin1, admin_bdry_gdf, "admin1_bry")
         point_gdf = point_gdf[~point_gdf.index.duplicated(keep='first')]
 
     # Check if points fall into right admin2 boundary
-    if poi_admin2 is not None:
-        point_gdf = check_by_admin(point_gdf, poi_admin2, admin2_bdry_gdf, "admin2_bry")
+    if poi_admin2 != "":
+        point_gdf = check_by_admin(point_gdf, poi_admin2, admin_bdry_gdf, "admin2_bry")
         point_gdf = point_gdf[~point_gdf.index.duplicated(keep='first')]
 
     # match admin1 names
     print("Matching admin names...")
-    select_layer = None
-    if poi_admin1 is not None:
-        if poi_admin2 is None:
-            select_layer = admin1_bdry_gdf
-        if poi_admin2 is not None:
-            select_layer = admin2_bdry_gdf
 
-    point_gdf[poi_admin1].fillna("Missing", inplace=True)
-    fuzzy_match(point_gdf, poi_admin1, select_layer, "admin1_bry", None,
-                match_level="", input_table_level_vars=[],
-                match_table_level_vars=[])
-    point_gdf[poi_admin1].replace("Missing", np.nan, inplace=True)
+    if poi_admin1 != "":
+        point_gdf[poi_admin1].fillna("Missing", inplace=True)
+        fuzzy_match(point_gdf, poi_admin1, admin_bdry_gdf, "admin1_bry", None,
+                    match_level="", input_table_level_vars=[],
+                    match_table_level_vars=[])
+        point_gdf[poi_admin1].replace("Missing", np.nan, inplace=True)
 
     # match admin2 names
-    if poi_admin2 is not None:
+    if poi_admin2 != "":
         point_gdf[poi_admin2].fillna("Missing", inplace=True)
-        fuzzy_match(point_gdf, poi_admin2, admin2_bdry_gdf, "admin2_bry", None,
-                    match_level="with level", input_table_level_vars=[poi_admin1 + "_updated"],
-                    match_table_level_vars=["admin1_bry" + "_cleaned"])
+        input_table_level_vars = []
+        match_table_level_vars = []
+        if poi_admin1 != "":
+            input_table_level_vars = [poi_admin1 + "_updated"]
+            match_table_level_vars = ["admin1_bry" + "_cleaned"]
+        fuzzy_match(point_gdf, poi_admin2, admin_bdry_gdf, "admin2_bry", None,
+                    match_level="with level", input_table_level_vars=input_table_level_vars,
+                    match_table_level_vars=match_table_level_vars)
         point_gdf[poi_admin2].replace("Missing", np.nan, inplace=True)
 
     # check distance between points and admin boundary if point is outside the respective admin boundary
     print("Calculating distance to admin boundaries for points that fall outside of right  admin units...")
-    if poi_admin1 is not None:
+    if poi_admin1 != "":
         calculate_dist_point_to_polygon_bdry(point_gdf, poi_admin1, poi_lat_var, poi_long_var,
-                                             admin1_bdry_gdf, "admin1_bry")
+                                             admin_bdry_gdf, "admin1_bry")
 
     # check distance between points and admin boundary if point is outside respective admin boundary
-    if poi_admin2 is not None:
+    if poi_admin2 != "":
         calculate_dist_point_to_polygon_bdry(point_gdf, poi_admin2, poi_lat_var, poi_long_var,
-                                             admin2_bdry_gdf, "admin2_bry")
+                                             admin_bdry_gdf, "admin2_bry")
 
     # check if points are clusters in 25 and 50 meters
     print("Flags clustered points...")
@@ -216,8 +201,7 @@ def main(config_file=None, config=None):
     create_geo_cluster_column(point_gdf, poi_long_var, poi_lat_var, 50, min_samples=2)
     point_gdf.loc[point_gdf[poi_lat_var] == 0, "geo_dbscan_r50_cluster_id"] = np.nan
 
-    # make lat long== 0 to no data
-    # region
+    # make lat long == 0 to no data
     point_gdf.loc[point_gdf[poi_lat_var] == 0, poi_lat_var] = np.nan
     point_gdf.loc[point_gdf[poi_long_var] == 0, poi_long_var] = np.nan
     point_gdf.loc[point_gdf[poi_lat_var].isnull(), "settlement_type"] = "NA"
@@ -225,43 +209,30 @@ def main(config_file=None, config=None):
     point_gdf.loc[point_gdf[poi_lat_var].isnull(), "is_overlap"] = "NA"
     point_gdf.loc[point_gdf[poi_lat_var].isnull(), "dist_to_settlement_type"] = -1
 
-    if poi_admin1 is not None:
+    if poi_admin1 != "":
         point_gdf.loc[point_gdf[poi_lat_var].isnull(), "dist_to_admin1_bry_border_km"] = -1
         point_gdf.loc[point_gdf[poi_lat_var].isnull(), "admin1_bryMatch"] = "NA"
-    if poi_admin2 is not None:
+    if poi_admin2 != "":
         point_gdf.loc[point_gdf[poi_lat_var].isnull(), "dist_to_admin2_bry_border_km"] = -1
         point_gdf.loc[point_gdf[poi_lat_var].isnull(), "admin2_bryMatch"] = "NA"
-    # endregion
 
-    for col in point_gdf.columns:
-        if point_gdf[col].dtype == 'datetime64[ns]':
-            point_gdf[col] = point_gdf[col].astype(str)
+    # if poi_lat_var != "":
+    #     get_min_resolution(point_gdf, poi_lat_var, poi_long_var)
 
-    print("Starting Export")
+    print("Starting Export ...", end="")
     point_gdf.drop(['Unnamed: 0', 'dist_to_admin1_bry', 'dist_to_admin2_bry',
                     'admin1_clean_match_uuid', 'admin2_clean_match_uuid', 'admin1_bry_clean', 'admin2_bry_clean'],
                    axis=1, inplace=True, errors="ignore")
-
     poi_output_full_filename = write_data(point_gdf, poi_output_full_filename)
+    print(f"output table saved to: {poi_output_full_filename}")
 
-    print(f"Output table is saved here: {poi_output_full_filename}")
-
-    # export boundary layers
-    # region
-    print("Exporting boundaries")
-    if poi_admin1 is not None:
-        for col in admin1_bdry_gdf.columns:
-            if admin1_bdry_gdf[col].dtype == 'datetime64[ns]':
-                admin1_bdry_gdf[col] = admin1_bdry_gdf[col].astype(str)
-        admin1_bdry_gdf[admin1_columns].to_file(admin1_bry)
-
-    if poi_admin2 is not None:
-        for col in admin2_bdry_gdf.columns:
-            if admin2_bdry_gdf[col].dtype == 'datetime64[ns]':
-                admin2_bdry_gdf[col] = admin2_bdry_gdf[col].astype(str)
-        admin2_bdry_gdf[admin2_columns].to_file(admin2_bry)
-
-    # endregion
+    # We don't usually want to export our boundaries -
+    # especially since shape files inexplicably change columns to lowercase
+    # print("Exporting boundaries ...", end="")
+    # if poi_admin1 is not None:
+    #     bndry_output = write_data(admin_bdry_gdf, admin_bdry_file + "_tmp")
+    # print(f"boundaries saved to: {bndry_output}")
 
 
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    main()

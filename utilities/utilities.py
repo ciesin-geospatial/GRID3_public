@@ -17,6 +17,7 @@ from collections import Counter
 from scipy.spatial import distance
 import uuid
 import sys
+import fiona
 
 
 def abort(reason):
@@ -57,6 +58,21 @@ def sanity_check_df(df, src, column_list):
         if not cn == "" and cn not in df.columns:
             abort("missing field '" + cn + "' from " + src)
 
+
+def sanity_check_file(src_full_path):
+    """
+    This method checks if the given input file exists and aborts if not.
+    It handles are special case of .gdb databases.
+    :param src_full_path: file to check for, can include any file type we support
+    """
+    src_dir, src_filename = os.path.split(src_full_path)
+    if get_file_type(src_full_path) == "feature":
+        all_layers = fiona.listlayers(src_dir)
+        if src_filename not in all_layers:
+            abort("can't load input, file doesn't exists: " + str(src_full_path))
+    else:
+        if not os.path.isfile(src_full_path):
+            abort("can't load input, file doesn't exists: " + str(src_full_path))
 
 def get_file_type(file_path):
     """
@@ -851,3 +867,13 @@ def add_g3_required_fields(df, data_source, cntry_iso):
     df['tmp_num'] = df.apply(lambda row: my_random_string(), axis=1)
     create_unique_column(df, cols_to_concat=['g3_source', 'tmp_num'], new_col_name="g3_id", sep="_")
     df.drop(['tmp_num'], inplace=True, axis=1, errors="ignore")
+
+
+def get_min_resolution(sdf, lat_var, long_var):
+    sdf['tmp1'] = sdf[lat_var].apply(str).str.split('.',expand=True).iloc[:,1]
+    sdf['tmp2'] = sdf[long_var].astype(str).str.split('.',expand=True).iloc[:,1]
+    sdf['tmp3'] = sdf['tmp1'].str.len()
+    sdf['tmp4'] = sdf['tmp2'].str.len()
+    sdf['min_resolution'] = sdf[['tmp3','tmp4']].min(axis=1)
+    #sdf.drop(['tmp1', 'tmp2','tmp3','tmp4'], axis = 1, inplace = True)
+    return sdf

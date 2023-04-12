@@ -9,7 +9,7 @@ dictionaries_dir =
 ## where to read raw data from. If the file is a feature class include the gdb extention D:\mydata.gdb
 poi_input_dir =  D:\data\input
 
-## name of input table with file extension. Supported files include .csv, .xlsx, .gpkg, .shp, featureclass(do not have extenstion)
+## name of input table with file extention. Supported files include .csv, .xlxs, .gpkg, .shp, featureclass(do not have extention)
 poi_input_filename = moz_health_facilities.xlsx
 
 ## where to write the output file to
@@ -31,16 +31,9 @@ poi_data_type=health_facility
 ## if the admin level is not in the data you are cleaning then leave it blank
 ## see the country_dictionary for mapping
 
-# add the name of the field that hold the province name
 boundary1=province
-
-# add the name of the field that holds the district name
 boundary2=district
-
-# add the name of the field that holds the posto name
 boundary3=posto
-
-# currently blank for Mozambique
 boundary4=
 
 ## Language:French, English, or Portuguese
@@ -67,7 +60,7 @@ old_spelling_dict_path=None
 
 
 [preprocessing1]
-## output file type, specified by extension (.xlsx, .cvs, .gpkg)
+## output file type, specified by extension (.xlsx, .csv, .gpkg)
 poi_output_extension_type = .xlsx
 
 
@@ -75,24 +68,23 @@ poi_output_extension_type = .xlsx
 ## output field from prepro1, these fields are created by preprocessing1
 poi_field=g3_hltfac
 
-## admin levels from prepro1, these fields are created by preprocessing1
-poi_admin1=moz_dist
-poi_admin2=moz_posto
+## admin levels from prepro1 that you will check against the boundaries, these fields names are created by preprocessing1
+poi_admin1=g3_dist
+poi_admin2=g3_posto
 
-## output file type, specified by extension (.xlsx, .cvs, or .gpkg)
-poi_output_extension_type = .xlsx
+## output file type, specified by extension (.xlsx, .csv, or .gpkg)
+poi_output_extension_type = .gpkg
 
-## admin1 boundary layer, this should be the same administrative level defined by poi_admin1 above
-admin1_bry=D:\data\boundaries\moz_boundaries.gdb\moz_district_boundaries
+## admin boundary layer, this admin boundary should have fields that hold
+## the admins values you will be checking in the POI file
 
-## admin1 field name from admin1 boundary
-admin1_bry_var=district
+admin_bdry_file =D:\data\boundaries\moz_boundaries.gdb\moz_posto_boundaries
 
-## admin2 boundary layer, this should be the same administrative level defined by poi_admin2 above
-admin2_bry=D:\data\boundaries\moz_boundaries.gdb\moz_posto_boundaries
+## admin1 field name from admin boundary
+admin1_bdry_var=district
 
-## admin2 field name from admin2 boundary
-admin2_bry_var=posto
+## admin2 field name from admin boundary
+admin2_bdry_var=posto
 
 ## settlement extent layer
 path_sett_extent=D:\GRID\DRC\GRID3_moz_settlement_extents_20200403_V02.gdb\merged_extents

@@ -43,6 +43,7 @@ def main(config_file=None, config=None):
         poi_long_var = config_general['poi_long_field']
 
         country_ISO = config_general['country_ISO']
+        language_var = config_general['language']
         poi_name_field = config_general['poi_name_field']
         poi_type_field = config_general['poi_type_field']
         poi_data_type = config_general['poi_data_type']
@@ -129,6 +130,10 @@ def main(config_file=None, config=None):
     print("Mapping types...")
     if poi_type_field != "":
         map_type(poi_df, poi_type_field, poi_output_type_field + "_orig", "score", type_dict_df)
+
+    if language_var == "French" or language_var == "Portuguese":
+        print("Updating types based on language...")
+        fix_language(poi_df, poi_output_type_field, language_var)
 
     # add grid3 required fields
     print("Adding required GRID3 fields...")
